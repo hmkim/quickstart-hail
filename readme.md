@@ -4,7 +4,7 @@ This solution was designed to provide a reproducible, easy to deploy environment
 
 ![emr-hail_1](docs/images/emr-hail.png)
 
-To integrate Hail and EMR, we leverage [Packer](https://www.packer.io/) from HashiCorp alongside [AWS CodeBuild](https://aws.amazon.com/codebuild/faqs/?nc=sn&loc=5) to create a custom AMI pre-packaged with Hail, and optionally containing the [Variant Effect Predictor (VEP)](https://uswest.ensembl.org/info/docs/tools/vep/index.html). Then, an EMR cluster is launched using this custom AMI.
+To integrate Hail and EMR, we leverage [Packer](https://www.packer.io/) from HashiCorp alongside [AWS CodeBuild](https://aws.amazon.com/codebuild/faqs/?nc=sn&loc=5) to create a custom AMI pre-packaged with Hail, and optionally containing the [Variant Effect Predictor (VEP)](https://ensembl.org/info/docs/tools/vep/index.html). Then, an EMR cluster is launched using this custom AMI.
 
 Users leverage an AWS SageMaker Notebook instance to run JupyterLab, and pass commands to Hail from the Notebook via [Apache Livy](https://livy.incubator.apache.org/).
 

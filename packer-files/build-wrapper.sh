@@ -22,8 +22,8 @@ cat <<EOF
     --htslib-version   [HTSLIB Version]      - OPTIONAL.  If omitted, develop branch will be used.
     --samtools-version [Samtools Version]    - OPTIONAL.  If omitted, master branch will be used.
     --vep-version      [Number Version]      - OPTIONAL.  If omitted, VEP will not be included.
-    --emr-version      [Number Version]      - OPTIONAL.  If omitted, EMR version will default to 6.5.0.
-    --spark-version    [Number Version]      - OPTIONAL.  If omitted, Spark version will default to 3.1.2.
+    --emr-version      [Number Version]      - OPTIONAL.  If omitted, EMR version will default to 7.1.0.
+    --spark-version    [Number Version]      - OPTIONAL.  If omitted, Spark version will default to 3.5.0.
 
     Example:
 
@@ -32,12 +32,12 @@ cat <<EOF
                     --subnet-type private \\
                     --vpc-id vpc-99999999 \\
                     --instance-profile-name hail-packer-123abc \\
-                    --hail-version 0.2.34 \\
-                    --htslib-version 1.10.2 \\
-                    --samtools-version 1.10 \\
-                    --vep-version 99 \\
-                    --emr-version 6.3.0 \\
-                    --spark-version 3.1.1-amzn-0
+                    --hail-version 0.2.131 \\
+                    --htslib-version 1.20 \\
+                    --samtools-version 1.20 \\
+                    --vep-version 104 \\
+                    --emr-version 7.1.0 \\
+                    --spark-version 3.5.0
 
 EOF
 }
@@ -138,16 +138,24 @@ fi
 # Update build.vars
 if [ -z "$SPARK_VERSION" ]
 then
-        SPARK_VERSION="3.1.2"
+        SPARK_VERSION="3.5.0"
 fi
+
+if [ -z "$SCALA_VERSION" ]
+then
+        SCALA_VERSION="2.12.17"
+fi
+
 
 if [ -z "$EMR_VERSION" ]
 then
-        EMR_VERSION="6.5.0"
+        EMR_VERSION="7.1.0"
 fi
+
 echo $SPARK_VERSION
 echo $EMR_VERSION
 echo $HAIL_VERSION
+echo $SCALA_VERSION
 echo "=============================================================="
 export AWS_MAX_ATTEMPTS=600  # Builds time out with default value
 echo "Building Packer image"
@@ -165,4 +173,4 @@ packer build -var hail_name_version="$HAIL_NAME_VERSION" \
                 -var emr_version="$EMR_VERSION" \
                 -var spark_version=$SPARK_VERSION \
                 -var-file=build.vars \
-                amazon-linux.json
+                -on-error=ask amazon-linux.json

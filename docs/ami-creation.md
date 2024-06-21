@@ -146,7 +146,7 @@ Each time a file changes under the `packer-files` directory you must zip and pus
 From the `hail/packer-files` directory, zip the contents and move it to an S3 bucket/key that matches the parameters set in your CloudFormation.
 
 ```bash
-14:31 $ zip packer-files.zip -r ./
+$ zip packer-files.zip -r ./
   adding: codebuild/ (stored 0%)
   adding: codebuild/buildspec.yml (deflated 38%)
   adding: build-wrapper.sh (deflated 61%)
@@ -168,7 +168,7 @@ From the `hail/packer-files` directory, zip the contents and move it to an S3 bu
   adding: scripts/vep_install.sh (deflated 65%)
   adding: scripts/R_install.R (deflated 32%)
   adding: amazon-linux.json (deflated 69%)
-14:35 $ aws s3 mv packer-files.zip s3://YOUR-BUCKET/ami/packer-files.zip
+$ aws s3 mv packer-files.zip s3://YOUR-BUCKET/ami/packer-files.zip
 move: ./packer-files.zip to s3://YOUR-BUCKET/ami/packer-files.zip
 ```
 

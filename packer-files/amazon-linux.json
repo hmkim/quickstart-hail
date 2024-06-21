@@ -1,13 +1,14 @@
 {
   "builders": [
     {
+      "profile": "AdministratorAccess-664263524008", 
       "type": "amazon-ebs",
       "associate_public_ip_address": "{{user `associate_public_ip_address`}}",
       "ssh_interface": "{{user `ssh_interface`}}",
       "source_ami_filter": {
         "filters": {
           "virtualization-type": "hvm",
-          "name": "amzn2-ami-hvm-2.0.*",
+          "name": "al2023-ami-20*",
           "root-device-type": "ebs"
         },
         "owners": [
@@ -78,32 +79,8 @@
       ]
     },
     {
-      "type": "file",
-      "source": "scripts/R_install.R",
-      "destination": "/tmp/R_install.R"
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "sudo amazon-linux-extras install -y R4",
-        "sudo R --no-save < /tmp/R_install.R && rm /tmp/R_install.R"
-      ]
-    },
-    {
       "type": "shell",
       "inline": "sudo sed -i '$d' /etc/security/limits.conf && sudo sed -i '$d' /etc/security/limits.conf"
-    },
-    {
-      "type": "file",
-      "source": "scripts/cluster_manifest.sh",
-      "destination": "/tmp/cluster_manifest.sh"
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "chmod 755 /tmp/cluster_manifest.sh",
-        "sudo mv /tmp/cluster_manifest.sh /usr/local/bin/cluster_manifest.sh"
-      ]
     },
     {
       "type": "shell",

@@ -5,7 +5,7 @@ Parameters:
 
   pHtslibVersion:
     Description: "Version of HTSLIB to install - https://github.com/samtools/samtools/releases"
-    Default: "1.10.2"
+    Default: "1.20"
     Type: "String"
 
   pKmsEbsArn:
@@ -23,7 +23,7 @@ Parameters:
 
   pSamtoolsVersion:
     Description: "Version of Samtools to install - https://github.com/samtools/htslib/releases"
-    Default: "1.10"
+    Default: "1.20"
     Type: "String"
 
   pSubnetId:
@@ -203,7 +203,7 @@ Resources:
             Value: "build.vars"
           - Name: "HAIL_VERSION"
             Type: "PLAINTEXT"
-            Value: "0.2.105"
+            Value: "0.2.130"
           - Name: "HTSLIB_VERSION"
             Type: "PLAINTEXT"
             Value: !Ref pHtslibVersion
@@ -262,7 +262,7 @@ Resources:
             Value: "build.vars"
           - Name: "HAIL_VERSION"
             Type: "PLAINTEXT"
-            Value: "0.2.105"
+            Value: "0.2.130"
           - Name: "HTSLIB_VERSION"
             Type: "PLAINTEXT"
             Value: !Ref pHtslibVersion

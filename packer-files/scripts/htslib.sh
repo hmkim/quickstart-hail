@@ -8,16 +8,7 @@ set -xe
 
 REPOSITORY_URL="https://github.com/samtools/htslib.git"
 
-yum -y install \
-    autoconf \
-    bzip2-devel \
-    gcc72 \
-    git \
-    libcurl \
-    libcurl-devel \
-    openssl-devel \
-    xz-devel \
-    zlib-devel
+dnf -y install autoconf bzip2-devel git libcurl-devel openssl-devel xz-devel zlib-devel
 
 # Added due to gcc failure in Amazon Linux 2 AMI.
 # error: no acceptable C compiler found in $PATH
@@ -30,15 +21,15 @@ fi
 
 mkdir -p /opt
 cd /opt
-git clone "$REPOSITORY_URL"
-cd htslib
-git checkout "$HTSLIB_VERSION"
-#git checkout "1.20"
-git submodule update --init --recursive
-autoreconf -i  # Build the configure script and install files it uses
-./configure    # Optional but recommended, for choosing extra functionality
-#autoheader
-#autoconf
-#./configure
-make -j "$(grep -c ^processor /proc/cpuinfo)"
-make install
+
+if [ ! -d htslib ]; then
+   git clone "$REPOSITORY_URL"
+   cd htslib
+   git checkout "$HTSLIB_VERSION"
+   git submodule update --init --recursive
+   autoheader
+   autoconf
+   ./configure
+   make -j "$(grep -c ^processor /proc/cpuinfo)"
+   make install
+fi

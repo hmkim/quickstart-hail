@@ -536,7 +536,7 @@ Resources:
                   rdata = {"Error": "Could not perform the operation"}
                   cfnresponse.send(event, context, cfnresponse.FAILED, rdata)
 
-      Runtime: "python3.7"
+      Runtime: "python3.12"
       Timeout: 300
 
   lambdaS3seedPermission:

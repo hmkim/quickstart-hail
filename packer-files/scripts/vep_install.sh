@@ -28,19 +28,22 @@ function install_prereqs {
         git \
         perl-App-cpanminus \
         perl-Env \
+        unzip \
+        which \
         zlib-devel \
         mariadb-devel \
-	perl-DBI \
-	perl-DBD-MySQL \
-	perl-XML-LibXML \
-	perl-Compress-Raw-Zlib \
-	perl-GD \
-	perl-JSON \
-	perl-Module-Build \
-	perl-Try-Tiny \
-	perl-Digest \
-	perl-autodie \
-	perl-Digest-MD5 
+        perl-DBD-MySQL \
+	perl-GD
+
+    cpanm \
+        autodie \
+        Compress::Zlib \
+        DBI \
+        Digest::MD5 \
+        HTTP::Tiny \
+        JSON \
+        Module::Build \
+        Try::Tiny
 
     # Installed alone due to package dependency issues
     cpanm \
@@ -89,20 +92,20 @@ function vep_install {
         done
 
         # Rat (c)ache and (f)asta
-#        if [ -f "/tmp/rattus_norvegicus_vep_${VEP_VERSION}_Rnor_6.0.tar.gz" ]; then
-#            tar --directory "$VEP_CACHE_DIR"  -xf "/tmp/rattus_norvegicus_vep_${VEP_VERSION}_Rnor_6.0.tar.gz"
-#            perl INSTALL.pl --DESTDIR "$VEP_DIR" --CACHEDIR "$VEP_DIR"/cache --CACHEURL "$VEP_CACHE_DIR" \
-#                    --AUTO cf --SPECIES rattus_norvegicus --ASSEMBLY Rnor_6.0 --NO_HTSLIB --NO_UPDATE
-#            rm "/tmp/rattus_norvegicus_vep_${VEP_VERSION}_Rnor_6.0.tar.gz"
-#        fi
-#
-#        # Zebrafish (c)ache and (f)asta
-#        if [ -f "/tmp/danio_rerio_vep_${VEP_VERSION}_GRCz11.tar.gz" ]; then
-#            tar --directory "$VEP_CACHE_DIR"  -xf "/tmp/danio_rerio_vep_${VEP_VERSION}_GRCz11.tar.gz"
-#            perl INSTALL.pl --DESTDIR "$VEP_DIR" --CACHEDIR "$VEP_DIR"/cache --CACHEURL "$VEP_CACHE_DIR" \
-#                    --AUTO cf --SPECIES danio_rerio --ASSEMBLY GRCz11 --NO_HTSLIB --NO_UPDATE
-#            rm "/tmp/danio_rerio_vep_${VEP_VERSION}_GRCz11.tar.gz"
-#        fi
+        if [ -f "/tmp/rattus_norvegicus_vep_${VEP_VERSION}_Rnor_6.0.tar.gz" ]; then
+            tar --directory "$VEP_CACHE_DIR"  -xf "/tmp/rattus_norvegicus_vep_${VEP_VERSION}_Rnor_6.0.tar.gz"
+            perl INSTALL.pl --DESTDIR "$VEP_DIR" --CACHEDIR "$VEP_DIR"/cache --CACHEURL "$VEP_CACHE_DIR" \
+                    --AUTO cf --SPECIES rattus_norvegicus --ASSEMBLY Rnor_6.0 --NO_HTSLIB --NO_UPDATE
+            rm "/tmp/rattus_norvegicus_vep_${VEP_VERSION}_Rnor_6.0.tar.gz"
+        fi
+
+        # Zebrafish (c)ache and (f)asta
+        if [ -f "/tmp/danio_rerio_vep_${VEP_VERSION}_GRCz11.tar.gz" ]; then
+            tar --directory "$VEP_CACHE_DIR"  -xf "/tmp/danio_rerio_vep_${VEP_VERSION}_GRCz11.tar.gz"
+            perl INSTALL.pl --DESTDIR "$VEP_DIR" --CACHEDIR "$VEP_DIR"/cache --CACHEURL "$VEP_CACHE_DIR" \
+                    --AUTO cf --SPECIES danio_rerio --ASSEMBLY GRCz11 --NO_HTSLIB --NO_UPDATE
+            rm "/tmp/danio_rerio_vep_${VEP_VERSION}_GRCz11.tar.gz"
+        fi
 
         # Plugins are installed to $HOME.  Install all (p)lugins, then move to common location
         perl INSTALL.pl --AUTO p --PLUGINS all --NO_UPDATE

@@ -329,7 +329,8 @@ Parameters:
   pEmrReleaseLabel:
     AllowedValues:
       - "emr-6.5.0"
-    Default: "emr-6.5.0"
+      - "emr-7.1.0"
+    Default: "emr-7.1.0"
     Description: ""
     Type: "String"
 
