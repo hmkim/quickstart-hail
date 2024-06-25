@@ -11,7 +11,7 @@ REPOSITORY_URL="https://github.com/hail-is/hail.git"
 function install_prereqs {
   mkdir -p "$HAIL_ARTIFACT_DIR"
 
-  dnf -y install cmake java-1.8.0-amazon-corretto java-1.8.0-amazon-corretto-devel lz4 lz4-devel blas-devel lapack-devel libffi-devel 
+  dnf -y install cmake java-1.8.0-amazon-corretto java-1.8.0-amazon-corretto-devel lz4 lz4-devel blas-devel lapack-devel
   
   dnf -y install python3-pip
 

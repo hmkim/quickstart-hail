@@ -159,6 +159,7 @@ echo $SCALA_VERSION
 echo "=============================================================="
 export AWS_MAX_ATTEMPTS=600  # Builds time out with default value
 echo "Building Packer image"
+echo "packer build -var hail_name_version=$HAIL_NAME_VERSION -var hail_version=$HAIL_VERSION -var roda_bucket=$RODA_BUCKET -var htslib_version=$HTSLIB_VERSION -var samtools_version=$SAMTOOLS_VERSION -var subnet_id=$SUBNET_ID -var associate_public_ip_address=$ASSOCIATE_PUBLIC_IP_ADDRESS -var ssh_interface=$SSH_INTERFACE -var vep_version=$VEP_VERSION -var vpc_id=$VPC_ID -var instance_profile_name=$INSTANCE_PROFILE_NAME -var emr_version=$EMR_VERSION -var spark_version=$SPARK_VERSION -var-file=build.vars -on-error=ask -debug amazon-linux.json"
 packer build -var hail_name_version="$HAIL_NAME_VERSION" \
                 -var hail_version="$HAIL_VERSION" \
                 -var roda_bucket="$RODA_BUCKET" \

@@ -22,28 +22,28 @@ export PATH="$PATH:/usr/local/bin"
 export LC_ALL=en_US.UTF-8
 
 function install_prereqs {
-    yum -y install \
+    dnf -y install \
         gd-devel \
         expat-devel \
         git \
-        perl-App-cpanminus \
         perl-Env \
+	perl-CPAN \
         unzip \
         which \
         zlib-devel \
-        mariadb-devel \
         perl-DBD-MySQL \
-	perl-GD
+	perl-GD \
+	perl-autodie \
+	perl-Compress-Raw-Zlib \
+	perl-DBI \
+    	perl-Digest-MD5 \
+	perl-HTTP-Tiny \
+	perl-JSON \
+	perl-Module-Build \
+	perl-Test-Warnings \
+	perl-Try-Tiny 
 
-    cpanm \
-        autodie \
-        Compress::Zlib \
-        DBI \
-        Digest::MD5 \
-        HTTP::Tiny \
-        JSON \
-        Module::Build \
-        Try::Tiny
+    cpan App::cpanminus
 
     # Installed alone due to package dependency issues
     cpanm \
@@ -57,13 +57,13 @@ function gsutil_install {
 }
 
 function download_homo_sapiens_file {
-    wget ftp://ftp.ensembl.org/pub/release-${1}/variation/vep/homo_sapiens_vep_${1}_${2}.tar.gz -P /tmp
-    # aws s3 cp /tmp/homo_sapiens_vep_${1}_${2}.tar.gz ${VEP_S3_SOURCE}${VEP_S3_CACHE_PATH}/
+    wget ftp://ftp.ensembl.org/pub/release-${1}/variation/vep/homo_sapiens_vep_${1}_${2}.tar.gz -P /opt
+    #aws s3 cp /homo_sapiens_vep_${1}_${2}.tar.gz ${VEP_S3_SOURCE}${VEP_S3_CACHE_PATH}/
 }
 
 function vep_install {
     mkdir -p "$VEP_CACHE_DIR"
-    aws s3 sync --exclude "*" --include "*vep_${VEP_VERSION}*" "$VEP_S3_SOURCE$VEP_S3_CACHE_PATH" /tmp
+    aws s3 sync --exclude "*" --include "*vep_${VEP_VERSION}*" "$VEP_S3_SOURCE$VEP_S3_CACHE_PATH" /opt
 
     # Install VEP - the earliest version available from GitHub is 87
     if [ "$VEP_VERSION" -ge 87 ]; then
@@ -79,34 +79,34 @@ function vep_install {
         HUMAN_REFERENCES=( GRCh37 GRCh38 )
         for REFERENCE in "${HUMAN_REFERENCES[@]}"
         do
-            if [ ! -f "/tmp/homo_sapiens_vep_${VEP_VERSION}_${REFERENCE}.tar.gz" ]; then
-                echo "/tmp/homo_sapiens_vep_${VEP_VERSION}_${REFERENCE}.tar.gz does not exist"
+            if [ ! -f "/opt/homo_sapiens_vep_${VEP_VERSION}_${REFERENCE}.tar.gz" ]; then
+                echo "/opt/homo_sapiens_vep_${VEP_VERSION}_${REFERENCE}.tar.gz does not exist"
                 download_homo_sapiens_file ${VEP_VERSION} ${REFERENCE}
             fi
 
             # Auto install (c)ache, and (f)asta
-            tar --directory "$VEP_CACHE_DIR"  -xf "/tmp/homo_sapiens_vep_${VEP_VERSION}_$REFERENCE.tar.gz"
+            tar --directory "$VEP_CACHE_DIR"  -xf "/opt/homo_sapiens_vep_${VEP_VERSION}_$REFERENCE.tar.gz"
             perl INSTALL.pl --DESTDIR "$VEP_DIR" --CACHEDIR "$VEP_DIR"/cache --CACHEURL "$VEP_CACHE_DIR" \
                     --AUTO cf --SPECIES homo_sapiens --ASSEMBLY "$REFERENCE" --NO_HTSLIB --NO_UPDATE
-            rm "/tmp/homo_sapiens_vep_${VEP_VERSION}_$REFERENCE.tar.gz"
+            rm "/opt/homo_sapiens_vep_${VEP_VERSION}_$REFERENCE.tar.gz"
         done
 
         # Rat (c)ache and (f)asta
-        if [ -f "/tmp/rattus_norvegicus_vep_${VEP_VERSION}_Rnor_6.0.tar.gz" ]; then
-            tar --directory "$VEP_CACHE_DIR"  -xf "/tmp/rattus_norvegicus_vep_${VEP_VERSION}_Rnor_6.0.tar.gz"
-            perl INSTALL.pl --DESTDIR "$VEP_DIR" --CACHEDIR "$VEP_DIR"/cache --CACHEURL "$VEP_CACHE_DIR" \
-                    --AUTO cf --SPECIES rattus_norvegicus --ASSEMBLY Rnor_6.0 --NO_HTSLIB --NO_UPDATE
-            rm "/tmp/rattus_norvegicus_vep_${VEP_VERSION}_Rnor_6.0.tar.gz"
-        fi
+#        if [ -f "/rattus_norvegicus_vep_${VEP_VERSION}_Rnor_6.0.tar.gz" ]; then
+#            tar --directory "$VEP_CACHE_DIR"  -xf "/rattus_norvegicus_vep_${VEP_VERSION}_Rnor_6.0.tar.gz"
+#            perl INSTALL.pl --DESTDIR "$VEP_DIR" --CACHEDIR "$VEP_DIR"/cache --CACHEURL "$VEP_CACHE_DIR" \
+#                    --AUTO cf --SPECIES rattus_norvegicus --ASSEMBLY Rnor_6.0 --NO_HTSLIB --NO_UPDATE
+#            rm "/rattus_norvegicus_vep_${VEP_VERSION}_Rnor_6.0.tar.gz"
+#        fi
 
         # Zebrafish (c)ache and (f)asta
-        if [ -f "/tmp/danio_rerio_vep_${VEP_VERSION}_GRCz11.tar.gz" ]; then
-            tar --directory "$VEP_CACHE_DIR"  -xf "/tmp/danio_rerio_vep_${VEP_VERSION}_GRCz11.tar.gz"
-            perl INSTALL.pl --DESTDIR "$VEP_DIR" --CACHEDIR "$VEP_DIR"/cache --CACHEURL "$VEP_CACHE_DIR" \
-                    --AUTO cf --SPECIES danio_rerio --ASSEMBLY GRCz11 --NO_HTSLIB --NO_UPDATE
-            rm "/tmp/danio_rerio_vep_${VEP_VERSION}_GRCz11.tar.gz"
-        fi
-
+#        if [ -f "/danio_rerio_vep_${VEP_VERSION}_GRCz11.tar.gz" ]; then
+#            tar --directory "$VEP_CACHE_DIR"  -xf "/danio_rerio_vep_${VEP_VERSION}_GRCz11.tar.gz"
+#            perl INSTALL.pl --DESTDIR "$VEP_DIR" --CACHEDIR "$VEP_DIR"/cache --CACHEURL "$VEP_CACHE_DIR" \
+#                    --AUTO cf --SPECIES danio_rerio --ASSEMBLY GRCz11 --NO_HTSLIB --NO_UPDATE
+#            rm "/danio_rerio_vep_${VEP_VERSION}_GRCz11.tar.gz"
+#        fi
+#
         # Plugins are installed to $HOME.  Install all (p)lugins, then move to common location
         perl INSTALL.pl --AUTO p --PLUGINS all --NO_UPDATE
         mv "$HOME/.vep/Plugins" "$VEP_DIR"/
