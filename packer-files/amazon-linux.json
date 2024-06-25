@@ -1,7 +1,6 @@
 {
   "builders": [
     {
-      "profile": "AdministratorAccess-664263524008", 
       "type": "amazon-ebs",
       "associate_public_ip_address": "{{user `associate_public_ip_address`}}",
       "ssh_interface": "{{user `ssh_interface`}}",
