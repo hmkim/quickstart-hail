@@ -3,6 +3,17 @@ Description: "EMR with Hail and VEP (qs-1qp776rr2)"
 
 
 Parameters:
+  pEmrApplications:
+    Type: List<String>
+    Default: Ganglia,Hadoop,Hive,Livy,Spark
+    Description: "Select the applications to install on the EMR cluster"
+    AllowedValues:
+      - Ganglia
+      - Hadoop
+      - Hive
+      - Livy
+      - Spark
+
   pAmi:
     Description: "(Required) Custom Hail AMI."
     Type: "String"
@@ -551,11 +562,15 @@ Resources:
     Type: "AWS::EMR::Cluster"
     Properties:
       Applications:
-        - Name: "Ganglia"
-        - Name: "Hadoop"
-        - Name: "Hive"
-        - Name: "Livy"
-        - Name: "Spark"
+       Fn::Select:
+          - 1
+          - Fn::Split:
+            - ','
+            - Fn::Join:
+              - ','
+              - Fn::Split:
+                - ','
+                - Fn::Sub: '${pEmrApplications}'
       AutoScalingRole: !Ref roleEmrAutoScaling
       BootstrapActions:
         - Name: pythonDateutilReinstall
