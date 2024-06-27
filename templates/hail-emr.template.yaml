@@ -3,16 +3,7 @@ Description: "EMR with Hail and VEP (qs-1qp776rr2)"
 
 
 Parameters:
-  pEmrApplications:
-    Type: List<String>
-    Default: "Ganglia,Hadoop,Hive,Livy,Spark"
-    AllowedValues:
-      - Ganglia
-      - Hadoop
-      - Hive
-      - Livy
-      - Spark
-
+  
   pAmi:
     Description: "(Required) Custom Hail AMI."
     Type: "String"
@@ -453,7 +444,6 @@ Metadata:
           default: "Cluster Configuration"
         Parameters:
           - "pClusterName"
-          - "pEmrApplications"
           - "pAmi"
           - "pEmrReleaseLabel"
           - "pEmrInstanceRootVolSize"
@@ -555,35 +545,17 @@ Conditions:
   UsingPermissionBoundary: !Equals [!Ref pUsePermissionBoundary, "yes"]
   UsingIamPrefix: !Equals [!Ref pUseIamPrefix, "yes"]
   UsingIamSuffix: !Equals [!Ref pUseIamSuffix, "yes"]
-  HasGanglia: !Contains [!Ref pEmrApplications, "Ganglia"]
-  HasHadoop: !Contains [!Ref pEmrApplications, "Hadoop"]
-  HasHive: !Contains [!Ref pEmrApplications, "Hive"]
-  HasLivy: !Contains [!Ref pEmrApplications, "Livy"]
-  HasSpark: !Contains [!Ref pEmrApplications, "Spark"]
 
 Resources:
 
   cluster:
     Type: "AWS::EMR::Cluster"
     Properties:
-      Applications: 
-        Fn::Transform:
-          Name: 'AWS::Include'
-          Parameters:
-            Location: !Sub 
-              - |
-                [
-                  ${Ganglia}
-                  ${Hadoop}
-                  ${Hive}
-                  ${Livy}
-                  ${Spark}
-                ]
-              - Ganglia: !If [HasGanglia, '{"Name": "Ganglia"},', '']
-                Hadoop: !If [HasHadoop, '{"Name": "Hadoop"},', '']
-                Hive: !If [HasHive, '{"Name": "Hive"},', '']
-                Livy: !If [HasLivy, '{"Name": "Livy"},', '']
-                Spark: !If [HasSpark, '{"Name": "Spark"},', '']
+      Applications:
+        - Name: "Hadoop"
+        - Name: "Hive"
+        - Name: "Livy"
+        - Name: "Spark" 
       AutoScalingRole: !Ref roleEmrAutoScaling
       BootstrapActions:
         - Name: pythonDateutilReinstall
