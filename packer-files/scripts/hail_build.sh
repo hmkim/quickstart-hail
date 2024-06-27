@@ -11,11 +11,12 @@ REPOSITORY_URL="https://github.com/hail-is/hail.git"
 function install_prereqs {
   mkdir -p "$HAIL_ARTIFACT_DIR"
 
-  dnf -y install cmake java-1.8.0-amazon-corretto java-1.8.0-amazon-corretto-devel lz4 lz4-devel blas-devel lapack-devel
-  
-  dnf -y install python3-pip
-
-
+  dnf -y install java-11-amazon-corretto-devel blas-devel lapack-devel lz4-devel gcc-c++ 
+  curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  python3 get-pip.py
+  pip install build 
+  pip install uv
+  dnf -y remove python3-requests # when this, remove the cloud-init
 }
 
 function hail_build
@@ -26,15 +27,24 @@ function hail_build
   cd hail/hail/
   git checkout "$HAIL_VERSION"
 
-  make install-on-cluster HAIL_COMPILE_NATIVES=1 SCALA_VERSION="2.12.17" SPARK_VERSION="$SPARK_VERSION"
+  export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto
+  make install-on-cluster HAIL_COMPILE_NATIVES=1 SPARK_VERSION="$SPARK_VERSION"
 }
 
 function hail_install
 {
   echo "Installing Hail locally"
 
-  su - ec2-user -c "pip3 install hail"
-  
+  cat <<- HAIL_PROFILE > "$HAIL_PROFILE"
+  export SPARK_HOME="/usr/lib/spark"
+  export PYSPARK_PYTHON="python3"
+  export PYSPARK_SUBMIT_ARGS="--conf spark.kryo.registrator=is.hail.kryo.HailKryoRegistrator --conf spark.serializer=org.apache.spark.serializer.KryoSerializer pyspark-shell"
+  export PYTHONPATH="$HAIL_ARTIFACT_DIR/$ZIP_HAIL:\$SPARK_HOME/python:\$SPARK_HOME/python/lib/py4j-src.zip:\$PYTHONPATH"
+HAIL_PROFILE
+
+  cp "$PWD/build/deploy/build/lib/hail/backend/$JAR_HAIL" "$HAIL_ARTIFACT_DIR"
+
+  dnf -y install cloud-init cloud-init-cfg-ec2
 }
 
 function cleanup()
@@ -45,6 +55,6 @@ function cleanup()
 }
 
 install_prereqs
-#hail_build
+hail_build
 hail_install
-#cleanup
+cleanup

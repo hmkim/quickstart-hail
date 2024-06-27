@@ -26,6 +26,5 @@ if [ ! -d samtools ]; then
    ./configure --with-htslib="$HTSLIB_DIR"
    make -j "$(grep -c ^processor /proc/cpuinfo)"
    make install
-   rm -rf /opt/samtools
 fi
 
