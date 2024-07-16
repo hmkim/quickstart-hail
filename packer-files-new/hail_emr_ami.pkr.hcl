@@ -52,7 +52,7 @@ source "amazon-ebs" "hail_ami" {
   vpc_id                  = var.vpc_id
   subnet_id               = var.subnet_id
   ssh_username            = "ec2-user"
-  ami_name                = "hail-${var.hail_name_version}"
+  ami_name = var.vep_version != null ? "hail-${var.hail_name_version}-vep-${var.vep_version}" : "hail-${var.hail_name_version}"
   ami_description         = var.ami_description
   iam_instance_profile    = var.instance_profile_name
   tags = {
