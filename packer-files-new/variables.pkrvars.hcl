@@ -1,15 +1,13 @@
-associate_public_ip_address = true
 ssh_interface               = "public_ip"
-instance_type               = "c5.4xlarge"
 volume_size_root            = 100
 volume_type_root            = "gp3"
 vpc_id                      = "vpc-090658d75a17af924"
 subnet_id                   = "subnet-010f4a3714d8177a0"
 hail_name_version           = "0.2.131"
-ami_description             = "Custom AMI for Hail on EMR"
 instance_profile_name       = "roleHailPacker"
 emr_version                 = "7.1.0"
 hail_version                = "0.2.131"
+ami_description             = "Custom AMI for Hail on EMR"
 htslib_version              = "1.20"
 samtools_version            = "1.20"
 spark_version               = "3.5.0"

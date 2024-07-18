@@ -7,19 +7,30 @@ packer {
   }
 }
 
-variable "region" {}
+variable "region" {
+  default = "ap-southeast-1"
+}
 variable "associate_public_ip_address" {}
 variable "ssh_interface" {}
-variable "instance_type" {}
-variable "volume_size_root" {}
-variable "volume_type_root" {}
+variable "instance_type" {
+  default = "c5.xlarge"
+}
+variable "volume_size_root" {
+  default = "100"
+}
+variable "volume_type_root" {
+  default = "gp3"
+}
 variable "vpc_id" {}
 variable "subnet_id" {}
 variable "hail_name_version" {}
-variable "ami_description" {}
 variable "instance_profile_name" {}
 variable "emr_version" {}
 variable "hail_version" {}
+variable "ami_description" {
+    default = "Hail w/ custom AMI"
+}
+
 variable "htslib_version" {}
 variable "samtools_version" {}
 variable "spark_version" {}
