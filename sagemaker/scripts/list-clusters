@@ -9,7 +9,7 @@ LIVY_TIMEOUT=1  # seconds
 
 function _getMasterIp {
     CLUSTER_ID=$1
-    MASTER_INSTANCE_GROUP=$(aws emr describe-cluster --cluster-id "$CLUSTER_ID" --query "Cluster.InstanceGroups[?Name=='Primary Instance Group'].Id" --output text)
+    MASTER_INSTANCE_GROUP=$(aws emr describe-cluster --cluster-id "$CLUSTER_ID" --query "Cluster.InstanceGroups[?Name=='MASTER' || Name=='Primary Instance Group'].Id" --output text)
     MASTER_IP=$(aws emr list-instances --cluster-id "$CLUSTER_ID" --instance-group-id "$MASTER_INSTANCE_GROUP" --query "Instances[].PrivateIpAddress" --output text)
     echo "$MASTER_IP"
 }
